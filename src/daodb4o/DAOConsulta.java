@@ -5,15 +5,16 @@
  **********************************/
 package daodb4o;
 
-import com.db4o.query.Query;
-import modelo.Consulta;
 
 import java.util.List;
+
+import com.db4o.query.Query;
+import modelo.Consulta;
 
 public class DAOConsulta extends DAO<Consulta>{
 	
 	//nome � usado como campo unico 
-	public Consulta read (String nome) {
+	public Consulta readAll (String nome) {
 		Query q = manager.query();
 		q.constrain(Consulta.class);
 		q.descend("nome").constrain(nome);

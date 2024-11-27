@@ -15,8 +15,6 @@ import java.util.List;
 import com.db4o.ObjectContainer;
 import com.db4o.query.Query;
 
-import modelo.Medico;
-
 public abstract class DAO<T> implements DAOInterface<T> {
 	protected static ObjectContainer manager;
 
@@ -48,15 +46,16 @@ public abstract class DAO<T> implements DAOInterface<T> {
 		manager.ext().refresh(obj, Integer.MAX_VALUE);
 	}
 
+
 	@SuppressWarnings("unchecked")
-	public List<Medico> readAll() {
+	public List<T> readAll() {
 		manager.ext().purge(); // limpar cache do manager
 
 		Class<T> type = (Class<T>) ((ParameterizedType) this.getClass().getGenericSuperclass())
 				.getActualTypeArguments()[0];
 		Query q = manager.query();
 		q.constrain(type);
-		return (List<Medico>) q.execute();
+		return (List<T>) q.execute();
 	}
 
 	// --------transa��o---------------
@@ -77,7 +76,6 @@ public abstract class DAO<T> implements DAOInterface<T> {
 	 * 
 	 */
 	public <X> int gerarId(Class<X> classe) {
-		
 		// verificar se o banco esta vazio
 		if (manager.query(classe).isEmpty()) {
 			return 1; 	// primeiro id da classe

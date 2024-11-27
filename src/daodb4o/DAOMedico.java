@@ -11,7 +11,8 @@ import com.db4o.query.Query;
 
 import modelo.Medico;
 
-public class DAOMedico extends DAO<Medico>{
+public class DAOMedico extends DAO{
+	
 	
 	//nome � usado como campo unico 
 	public Medico read (String nome) {
@@ -25,11 +26,11 @@ public class DAOMedico extends DAO<Medico>{
 			return null;
 	}
 	
-//	public void create(Medico obj){
-//		int novoid = super.gerarId(Medico.class);  	//gerar novo id da classe
-//		obj.setId(novoid);				//atualizar id do objeto antes de grava-lo no banco
-//		manager.store( obj );
-//	}
-	
+	public void create(Medico obj){
+		int novocrm = super.gerarId(Medico.class);  	//gerar novo id da classe
+		obj.setId(novocrm);				//atualizar id do objeto antes de grava-lo no banco
+		manager.store( obj );
+	}
+
 }
 

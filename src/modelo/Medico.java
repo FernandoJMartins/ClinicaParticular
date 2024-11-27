@@ -2,11 +2,11 @@ package modelo;
 
 public class Medico {
 	
-	private String crm;
+	private int crm;
 	private String nome;
 	private String especialidade;
 	
-	public Medico(String crm, String nome, String especialidade) {
+	public Medico(int crm, String nome, String especialidade) {
 		this.crm = crm;
 		this.nome = nome;
 		this.especialidade = especialidade;
@@ -16,10 +16,10 @@ public class Medico {
 		
 	}
 	
-	public String getCrm() {
+	public int getId() {
 		return crm;
 	}
-	public void setCrm(String crm) {
+	public void setId(int crm) {
 		this.crm = crm;
 	}
 	public String getNome() {
