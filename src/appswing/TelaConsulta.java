@@ -27,8 +27,8 @@ import javax.swing.ListSelectionModel;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 
-import modelo.Pessoa;
-import modelo.Telefone;
+import modelo.Medico;
+import modelo.Consulta;
 import regras_negocio.Fachada;
 
 public class TelaConsulta {
@@ -131,19 +131,19 @@ public class TelaConsulta {
 					switch(index) {
 					case 0: 
 						String mes = JOptionPane.showInputDialog("digite o mes");
-						List<Pessoa> resultado1 = Fachada.consultarMesNascimento(mes) ;
-						listagemPessoa(resultado1);
+						List<Medico> resultado1 = Fachada.consultarMesNascimento(mes) ;
+						listagemMedico(resultado1);
 						break;
 					case 1: 
 						String modelo = JOptionPane.showInputDialog("digite o apelido");
-						List<Pessoa> resultado2 = Fachada.consultarApelido(modelo);
-						listagemPessoa(resultado2);		
+						List<Medico> resultado2 = Fachada.consultarApelido(modelo);
+						listagemMedico(resultado2);		
 						break;
 					case 2: 
 						String n = JOptionPane.showInputDialog("digite N");
 						int numero = Integer.parseInt(n);
-						List<Pessoa> resultado3 = Fachada.consultarPessoasNTelefones(numero);
-						listagemPessoa(resultado3);
+						List<Medico> resultado3 = Fachada.consultarMedicosNConsultas(numero);
+						listagemMedico(resultado3);
 						break;
 
 					}
@@ -157,12 +157,12 @@ public class TelaConsulta {
 		comboBox = new JComboBox<String>();
 		comboBox.setToolTipText("selecione a consulta");
 		comboBox.setModel(new DefaultComboBoxModel<>(
-				new String[] {"pessoas que nasceram no mes X","pessoa com apelido X", "pessoas com N telefones" }));
+				new String[] {"Medicos que nasceram no mes X","Medico com apelido X", "Medicos com N Consultas" }));
 		comboBox.setBounds(21, 10, 513, 22);
 		frame.getContentPane().add(comboBox);
 	}
 
-	public void listagemPessoa(List<Pessoa> lista) {
+	public void listagemMedico(List<Medico> lista) {
 		try {
 			// objeto model contem todas as linhas e colunas da tabela
 			DefaultTableModel model = new DefaultTableModel();
@@ -173,18 +173,18 @@ public class TelaConsulta {
 			model.addColumn("Nome");
 			model.addColumn("Nascimento");
 			model.addColumn("Apelidos");
-			model.addColumn("Telefones");
+			model.addColumn("Consultas");
 
 			// criar as linhas da tabela
 			String texto1, texto2;
-			for (Pessoa p : lista) {
+			for (Medico p : lista) {
 				texto1 = String.join(",", p.getApelidos()); // concatena strings
-				if (p.getTelefones().size() > 0) {
+				if (p.getConsultas().size() > 0) {
 					texto2 = "";
-					for (Telefone t : p.getTelefones())
+					for (Consulta t : p.getConsultas())
 						texto2 += t.getNumero() + " ";
 				} else
-					texto2 = "sem telefone";
+					texto2 = "sem Consulta";
 				//adicionar linha no table
 				model.addRow(new Object[] { p.getId(), p.getNome(), p.getDtNascimento(), texto1, texto2 });
 
@@ -193,7 +193,7 @@ public class TelaConsulta {
 			table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF); // desabilita
 			table.getColumnModel().getColumn(0).setMaxWidth(40); // coluna id
 			table.getColumnModel().getColumn(3).setMinWidth(200); // coluna dos apelidos
-			table.getColumnModel().getColumn(4).setMinWidth(200); // coluna dos telefones
+			table.getColumnModel().getColumn(4).setMinWidth(200); // coluna dos Consultas
 			table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS); // desabilita
 
 		} catch (Exception erro) {

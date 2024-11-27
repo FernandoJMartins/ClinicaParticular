@@ -11,19 +11,19 @@ import java.time.format.DateTimeParseException;
 import java.util.List;
 
 import daodb4o.DAO;
-import daodb4o.DAOAluno;
-import daodb4o.DAOPessoa;
-import daodb4o.DAOTelefone;
-import modelo.Aluno;
-import modelo.Pessoa;
-import modelo.Telefone;
+import daodb4o.DAOMedico;
+import daodb4o.DAOPaciente;
+import daodb4o.DAOConsulta;
+import modelo.Medico;
+import modelo.Paciente;
+import modelo.Consulta;
 
 public class Fachada {
 	private Fachada() {}
 
-	private static DAOPessoa daopessoa = new DAOPessoa();
-	private static DAOAluno daoaluno = new DAOAluno();
-	private static DAOTelefone daotelefone = new DAOTelefone();
+	private static DAOPaciente daoMedico = new DAOPaciente();
+	private static DAOMedico daoPaciente = new DAOMedico();
+	private static DAOConsulta daoConsulta = new DAOConsulta();
 
 	public static void inicializar() {
 		DAO.open();
@@ -33,22 +33,22 @@ public class Fachada {
 		DAO.close();
 	}
 
-	public static Pessoa localizarPessoa(String nome) throws Exception {
-		Pessoa p = daopessoa.read(nome);
-		if (p == null) {
-			throw new Exception("pessoa inexistente:" + nome);
+	public static Medico localizarMedico(String nome) throws Exception {
+		Medico m = daoMedico.read(nome);
+		if (m == null) {
+			throw new Exception("Medico inexistente:" + nome);
 		}
-		return p;
+		return m;
 	}
-	public static Aluno localizarAluno(String nome) throws Exception {
-		Aluno a = daoaluno.read(nome);
+	public static Paciente localizarPaciente(String nome) throws Exception {
+		Paciente a = daoPaciente.read(nome);
 		if (a == null) {
-			throw new Exception("aluno inexistente:" + nome);
+			throw new Exception("Paciente inexistente:" + nome);
 		}
 		return a;
 	}
 
-	public static void criarPessoa(String nome, String data, List<String> apelidos) throws Exception {
+	public static void criarMedico(String nome, String data, List<String> apelidos) throws Exception {
 		DAO.begin();
 		try {
 			LocalDate.parse(data, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
@@ -56,19 +56,19 @@ public class Fachada {
 			DAO.rollback();
 			throw new Exception("formato data invalido:" + data);
 		}
-		Pessoa p = daopessoa.read(nome);
+		Medico p = daoMedico.read(nome);
 		if (p != null) {
 			DAO.rollback();
-			throw new Exception("criar pessoa - nome ja existe:" + nome);
+			throw new Exception("criar Medico - nome ja existe:" + nome);
 		}
-		p = new Pessoa(nome);
+		p = new Medico(nome);
 		p.setDtNascimento(data);
 		p.setApelidos(apelidos);
-		daopessoa.create(p);
+		daoMedico.create(p);
 		DAO.commit();
 	}
 
-	public static void criarAluno(String nome, String data, List<String>  apelidos, double nota) throws Exception {
+	public static void criarPaciente(String nome, String data, List<String>  apelidos, double nota) throws Exception {
 		DAO.begin();
 		try {
 			LocalDate.parse(data, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
@@ -77,26 +77,26 @@ public class Fachada {
 			throw new Exception("formato data invalido:" + data);
 		}
 
-		Pessoa p = daopessoa.read(nome); // nome de qualquer pessoa
+		Medico p = daoMedico.read(nome); // nome de qualquer Medico
 		if (p != null) {
 			DAO.rollback();
-			throw new Exception("criar aluno - nome ja existe:" + nome);
+			throw new Exception("criar Paciente - nome ja existe:" + nome);
 		}
 
-		Aluno a = new Aluno(nome, nota);
+		Paciente a = new Paciente(nome, nota);
 		a.setDtNascimento(data);
 		a.setApelidos(apelidos);
-		daoaluno.create(a);
+		daoPaciente.create(a);
 		DAO.commit();
 	}
 
-	public static void alterarPessoa(String nome, String data, List<String> apelidos) throws Exception {
+	public static void alterarMedico(String nome, String data, List<String> apelidos) throws Exception {
 		// permite alterar data, foto e apelidos
 		DAO.begin();
-		Pessoa p = daopessoa.read(nome);
+		Medico p = daoMedico.read(nome);
 		if (p == null) {
 			DAO.rollback();
-			throw new Exception("alterar pessoa - pessoa inexistente:" + nome);
+			throw new Exception("alterar Medico - Medico inexistente:" + nome);
 		}
 
 		p.setApelidos(apelidos);
@@ -106,21 +106,21 @@ public class Fachada {
 				p.setDtNascimento(data);
 			} catch (DateTimeParseException e) {
 				DAO.rollback();
-				throw new Exception("alterar pessoa - formato data invalido:" + data);
+				throw new Exception("alterar Medico - formato data invalido:" + data);
 			}
 		}
 
-		daopessoa.update(p);
+		daoMedico.update(p);
 		DAO.commit();
 	}
 
-	public static void alterarAluno(String nome, String data, List<String>  apelidos, double nota) throws Exception {
+	public static void alterarPaciente(String nome, String data, List<String>  apelidos, double nota) throws Exception {
 		// permite alterar data, foto e apelidos
 		DAO.begin();
-		Aluno a = daoaluno.read(nome);
+		Paciente a = daoPaciente.read(nome);
 		if (a == null) {
 			DAO.rollback();
-			throw new Exception("alterar aluno - nome inexistente:" + nome);
+			throw new Exception("alterar Paciente - nome inexistente:" + nome);
 		}
 
 		a.setApelidos(apelidos);
@@ -130,20 +130,20 @@ public class Fachada {
 				a.setDtNascimento(data);
 			} catch (DateTimeParseException e) {
 				DAO.rollback();
-				throw new Exception("alterar aluno - formato data invalido:" + data);
+				throw new Exception("alterar Paciente - formato data invalido:" + data);
 			}
 		}
 		a.setNota(nota);
-		daopessoa.update(a);
+		daoMedico.update(a);
 		DAO.commit();
 	}
 
 	public static void alterarData(String nome, String data) throws Exception {
 		DAO.begin();
-		Pessoa p = daopessoa.read(nome);
+		Medico p = daoMedico.read(nome);
 		if (p == null) {
 			DAO.rollback();
-			throw new Exception("alterar pessoa - pessoa inexistente:" + nome);
+			throw new Exception("alterar Medico - Medico inexistente:" + nome);
 		}
 
 		if (data != null) {
@@ -156,85 +156,85 @@ public class Fachada {
 			}
 		}
 
-		daopessoa.update(p);
+		daoMedico.update(p);
 		DAO.commit();
 	}
 
 	public static void alterarNome(String nome, String novonome) throws Exception {
 		DAO.begin();
-		Pessoa p = daopessoa.read(nome); // usando chave primaria
+		Medico p = daoMedico.read(nome); // usando chave primaria
 		if (p == null) {
 			DAO.rollback();
 			throw new Exception("alterar nome - nome inexistente:" + nome);
 		}
 		p.setNome(novonome);
-		daopessoa.update(p);
+		daoMedico.update(p);
 		DAO.commit();
 	}
 
-	public static void excluirPessoa(String nome) throws Exception {
+	public static void excluirMedico(String nome) throws Exception {
 		DAO.begin();
-		Pessoa p = daopessoa.read(nome);
+		Medico p = daoMedico.read(nome);
 		if (p == null) {
 			DAO.rollback();
-			throw new Exception("excluir pessoa - nome inexistente:" + nome);
+			throw new Exception("excluir Medico - nome inexistente:" + nome);
 		}
 
-		// desligar a pessoa de seus telefones orfaos e apaga-los do banco
-		for (Telefone t : p.getTelefones()) {
-			daotelefone.delete(t); // deletar o telefone orfao
+		// desligar a Medico de seus Consultas orfaos e apaga-los do banco
+		for (Consulta t : p.getConsultas()) {
+			daoConsulta.delete(t); // deletar o Consulta orfao
 		}
 
-		daopessoa.delete(p); // apagar a pessoa
+		daoMedico.delete(p); // apagar a Medico
 		DAO.commit();
 	}
 
-	public static void criarTelefone(String nome, String numero) throws Exception {
+	public static void criarConsulta(String nome, String numero) throws Exception {
 		DAO.begin();
-		Pessoa p = daopessoa.read(nome);
+		Medico p = daoMedico.read(nome);
 		if (p == null) {
 			DAO.rollback();
-			throw new Exception("criar telefone - nome inexistente" + nome + numero);
+			throw new Exception("criar Consulta - nome inexistente" + nome + numero);
 		}
-		Telefone t = daotelefone.read(numero);
+		Consulta t = daoConsulta.read(numero);
 		if (t != null) {
 			DAO.rollback();
-			throw new Exception("criar telefone - numero ja cadastrado:" + numero);
+			throw new Exception("criar Consulta - numero ja cadastrado:" + numero);
 		}
 		if (numero.isEmpty()) {
 			DAO.rollback();
-			throw new Exception("criar telefone - numero vazio:" + numero);
+			throw new Exception("criar Consulta - numero vazio:" + numero);
 		}
 
-		t = new Telefone(numero);
+		t = new Consulta(numero);
 		p.adicionar(t);
-		daotelefone.create(t);
+		daoConsulta.create(t);
 		DAO.commit();
 	}
 
-	public static void excluirTelefone(String numero) throws Exception {
+	public static void excluirConsulta(String numero) throws Exception {
 		DAO.begin();
-		Telefone t = daotelefone.read(numero);
+		Consulta t = daoConsulta.read(numero);
 		if (t == null) {
 			DAO.rollback();
-			throw new Exception("excluir telefone - numero inexistente:" + numero);
+			throw new Exception("excluir Consulta - numero inexistente:" + numero);
 		}
-		Pessoa p = t.getPessoa();
+		Medico p = t.getMedico();
 		p.remover(t);
-		t.setPessoa(null);
-		daopessoa.update(p);
-		daotelefone.delete(t);
+		t.setMedico(null);
+		daoMedico.update(p);
+		daoConsulta.delete(t);
 		DAO.commit();
 	}
 
 	public static void alterarNumero(String numero, String novonumero) throws Exception {
 		DAO.begin();
-		Telefone t1 = daotelefone.read(numero);
+		Consulta t1 = daoConsulta.read(numero);
 		if (t1 == null) {
 			DAO.rollback();
 			throw new Exception("alterar numero - numero inexistente:" + numero);
 		}
-		Telefone t2 = daotelefone.read(novonumero);
+		Consulta t2 = daoConsulta.read(novonumero);
 		if (t2 != null) {
 			DAO.rollback();
 			throw new Exception("alterar numero - novo numero ja existe:" + novonumero);
@@ -245,22 +245,22 @@ public class Fachada {
 		}
 
 		t1.setNumero(novonumero); // substituir
-		daotelefone.update(t1);
+		daoConsulta.update(t1);
 		DAO.commit();
 	}
 
-	public static List<Pessoa> listarPessoas() {
-		List<Pessoa> result = daopessoa.readAll();
+	public static List<Medico> listarMedicos() {
+		List<Medico> result = daoMedico.readAll();
 		return result;
 	}
 
-	public static List<Aluno> listarAlunos() {
-		List<Aluno> result = daoaluno.readAll();
+	public static List<Paciente> listarPacientes() {
+		List<Paciente> result = daoPaciente.readAll();
 		return result;
 	}
 
-	public static List<Telefone> listarTelefones() {
-		List<Telefone> result = daotelefone.readAll();
+	public static List<Consulta> listarConsultas() {
+		List<Consulta> result = daoConsulta.readAll();
 		return result;
 	}
 
@@ -269,45 +269,45 @@ public class Fachada {
 	 * CONSULTAS IMPLEMENTADAS NOS DAO
 	 * 
 	 **********************************************************/
-	public static List<Pessoa> consultarPessoas(String caracteres) {
-		List<Pessoa> result;
+	public static List<Medico> consultarMedicos(String caracteres) {
+		List<Medico> result;
 		if (caracteres.isEmpty())
-			result = daopessoa.readAll();
+			result = daoMedico.readAll();
 		else
-			result = daopessoa.readAll(caracteres);
+			result = daoMedico.read(caracteres);
 		return result;
 	}
 
 
-	public static List<Telefone> consultarTelefones(String digitos) {
-		List<Telefone> result;
+	public static List<Consulta> consultarConsultas(String digitos) {
+		List<Consulta> result;
 		if (digitos.isEmpty())
-			result = daotelefone.readAll();
+			result = daoConsulta.readAll();
 		else
-			result = daotelefone.readAll(digitos);
+			result = daoConsulta.readAll(digitos);
 		return result;
 	}
 
-	public static List<Pessoa> consultarMesNascimento(String mes) {
-		List<Pessoa> result;
-		result = daopessoa.readByMes(mes);
+	public static List<Medico> consultarMesNascimento(String mes) {
+		List<Medico> result;
+		result = daoMedico.readByMes(mes);
 		return result;
 	}
 
-	public static List<Pessoa> consultarPessoasNTelefones(int n) {
-		List<Pessoa> result;
+	public static List<Medico> consultarMedicosNConsultas(int n) {
+		List<Medico> result;
 		DAO.begin();
-		result = daopessoa.readByNTelefones(n);
+		result = daoMedico.readByNConsultas(n);
 		DAO.commit();
 		return result;
 	}
 
-	public static boolean temTelefoneFixo(String nome) {
-		return daopessoa.temTelefoneFixo(nome);
+	public static boolean temConsultaFixo(String nome) {
+		return daoMedico.temConsultaFixo(nome);
 	}
 
-	public static List<Pessoa> consultarApelido(String ap) {
-		return daopessoa.consultarApelido(ap);
+	public static List<Medico> consultarApelido(String ap) {
+		return daoMedico.consultarApelido(ap);
 	}
 
 }

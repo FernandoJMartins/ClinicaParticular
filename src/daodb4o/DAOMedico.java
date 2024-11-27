@@ -9,25 +9,24 @@ import java.util.List;
 
 import com.db4o.query.Query;
 
-import modelo.Aluno;
-import modelo.Pessoa;
+import modelo.Medico;
 
-public class DAOAluno  extends DAO<Aluno>{
+public class DAOMedico extends DAO<Medico>{
 	
-	//nome é usado como campo unico 
-	public Aluno read (String nome) {
+	//nome ï¿½ usado como campo unico 
+	public Medico read (String nome) {
 		Query q = manager.query();
-		q.constrain(Pessoa.class);
+		q.constrain(Medico.class);
 		q.descend("nome").constrain(nome);
-		List<Aluno> resultados = q.execute();
+		List<Medico> resultados = q.execute();
 		if (resultados.size()>0)
 			return resultados.get(0);
 		else
 			return null;
 	}
 	
-	public void create(Aluno obj){
-		int novoid = super.gerarId(Aluno.class);  	//gerar novo id da classe
+	public void create(Medico obj){
+		int novoid = super.gerarId(Medico.class);  	//gerar novo id da classe
 		obj.setId(novoid);				//atualizar id do objeto antes de grava-lo no banco
 		manager.store( obj );
 	}

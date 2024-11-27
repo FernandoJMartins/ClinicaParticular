@@ -1,0 +1,5 @@
+<dependency>
+    <groupId>com.db4o</groupId>
+    <artifactId>db4o</artifactId>
+    <version>8.0.337.143</version> <!-- Replace with the correct version -->
+</dependency>

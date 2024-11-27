@@ -5,8 +5,8 @@ package appconsole;
  * Prof. Fausto Ayres
  **********************************/
 
-import modelo.Pessoa;
-import modelo.Telefone;
+import modelo.Medico;
+import modelo.Consulta;
 import regras_negocio.Fachada;
 
 
@@ -16,29 +16,29 @@ public class Consultar {
 
 		try {
 			Fachada.inicializar();
-			System.out.println("\npessoas com nome jo ");
-			for(Pessoa p : Fachada.consultarPessoas("jo")) 
+			System.out.println("\nMedicos com nome jo ");
+			for(Medico p : Fachada.localizarMedico("jo")) 
 				System.out.println(p);
 
-			System.out.println("\ntelefones com numero 987 ");
-			for(Telefone t : Fachada.consultarTelefones("987")) 
+			System.out.println("\nConsultas com numero 987 ");
+			for(Consulta t : Fachada.consultarConsultas("987")) 
 				System.out.println(t);
 
-			System.out.println("\npessoas que nasceram no mes 02");
-			for(Pessoa p : Fachada.consultarMesNascimento("02")) 
+			System.out.println("\nMedicos que nasceram no mes 02");
+			for(Medico p : Fachada.consultarMesNascimento("02")) 
 				System.out.println(p);
 
-			System.out.println("\npessoas com apelido mary");
-			for(Pessoa p : Fachada.consultarApelido("mary")) 
+			System.out.println("\nMedicos com apelido mary");
+			for(Medico p : Fachada.consultarApelido("mary")) 
 				System.out.println(p);
 
 
-			System.out.println("\npessoas com dois telefones " );
-			for(Pessoa p : Fachada.consultarPessoasNTelefones(2) ) 
+			System.out.println("\nMedicos com dois Consultas " );
+			for(Medico p : Fachada.consultarMedicosNConsultas(2) ) 
 				System.out.println(p);
 
-			System.out.println("\nmaria tem telefone fixo?\n"+
-					Fachada.temTelefoneFixo("maria") );
+			System.out.println("\nmaria tem Consulta fixo?\n"+
+					Fachada.temConsultaFixo("maria") );
 
 
 

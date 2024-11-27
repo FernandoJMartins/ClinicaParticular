@@ -12,79 +12,73 @@ import com.db4o.query.Candidate;
 import com.db4o.query.Evaluation;
 import com.db4o.query.Query;
 
-import modelo.Pessoa;
+import modelo.Paciente;
 
-public class DAOPessoa  extends DAO<Pessoa>{
+public class DAOPaciente extends DAO<Paciente>{
 
-	//nome é usado como campo unico 
-	public Pessoa read (String nome) {
+	//nome ï¿½ usado como campo unico 
+	public Paciente read (String nome) {
 		Query q = manager.query();
-		q.constrain(Pessoa.class);
+		q.constrain(Paciente.class);
 		q.descend("nome").constrain(nome);
-		List<Pessoa> resultados = q.execute();
+		List<Paciente> resultados = q.execute();
 		if (resultados.size()>0)
 			return resultados.get(0);
 		else
 			return null;
 	}
 
-	public void create(Pessoa obj){
-		int novoid = super.gerarId(Pessoa.class);  	//gerar novo id da classe
+	public void create(Paciente obj){
+		int novoid = super.gerarId(Paciente.class);  	//gerar novo id da classe
 		obj.setId(novoid);				//atualizar id do objeto antes de grava-lo no banco
 		manager.store( obj );
 	}
 	/**********************************************************
 	 * 
-	 * TODAS AS CONSULTAS DE PESSOA
+	 * TODAS AS CONSULTAS DE Paciente
 	 * 
 	 **********************************************************/
 
-	public  List<Pessoa> readAll(String caracteres) {
+	public  List<Paciente> readAll(String caracteres) {
 		Query q = manager.query();
-		q.constrain(Pessoa.class);
+		q.constrain(Paciente.class);
 		q.descend("nome").constrain(caracteres).like();		//insensitive
-		List<Pessoa> result = q.execute(); 
+		List<Paciente> result = q.execute(); 
 		return result;
 	}
-	public Pessoa readByNumero(String n){
+	public Paciente readByCPF(String n){
 		Query q = manager.query();
-		q.constrain(Pessoa.class);
-		q.descend("telefones").descend("numero").constrain(n);
-		List<Pessoa> resultados = q.execute();
+		q.constrain(Paciente.class);
+		q.descend("cpf").descend("cpf").constrain(n);
+		List<Paciente> resultados = q.execute();
 		if(resultados.isEmpty())
 			return null;
 		else
 			return resultados.getFirst();
 	}
 
-	public List<Pessoa>  readByNTelefones(int n) {
+	public List<Paciente>  readByNTelefones(int n) {
 		Query q = manager.query();
-		q.constrain(Pessoa.class);
+		q.constrain(Paciente.class);
 		q.constrain(new Filtro(n));
 		return q.execute(); 
 	}
 
-	public List<Pessoa>  readByMes(String mes) {
+	public List<Paciente>  readByMes(String mes) {
 		Query q = manager.query();
-		q.constrain(Pessoa.class);  
+		q.constrain(Paciente.class);  
 		q.descend("dtnascimento").constrain("/"+mes+"/").contains();
 		return q.execute();
 	}
 
-	public boolean temTelefoneFixo(String nome) {
+	public boolean temConsultas(String nome) {
 		Query q = manager.query();
-		q.constrain(Pessoa.class);
+		q.constrain(Paciente.class);
 		q.descend("nome").constrain(nome);
-		q.descend("telefones").descend("numero").constrain("3").startsWith(true);;
+		q.descend("consultas").descend("numero").constrain("3").startsWith(true);;
 		return q.execute().size()>0;
 	}
-	
-	public List<Pessoa> consultarApelido(String ap) {
-		Query q = manager.query();
-		q.constrain(Pessoa.class);
-		q.descend("apelidos").constrain(ap);
-		return q.execute();
-	}
+
 }
 
 /*-------------------------------------------------*/
@@ -95,7 +89,7 @@ class Filtro  implements Evaluation {
 		this.n=n;
 	}
 	public void evaluate(Candidate candidate) {
-		Pessoa p = (Pessoa) candidate.getObject();
+		Paciente p = (Paciente) candidate.getObject();
 		candidate.include( p.getTelefones().size() == n );
 	}
 }

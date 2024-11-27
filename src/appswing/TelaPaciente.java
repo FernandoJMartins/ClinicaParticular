@@ -1,7 +1,7 @@
 /**********************************
  * IFPB - Curso Superior de Tec. em Sist. para Internet
  * Pesist~encia de Objetos
- * Prof. Fausto Maranhão Ayres
+ * Prof. Fausto Maranhï¿½o Ayres
  **********************************/
 
 package appswing;
@@ -31,11 +31,11 @@ import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 
-import modelo.Aluno;
+import modelo.Pessoa;
 import modelo.Telefone;
 import regras_negocio.Fachada;
 
-public class TelaAluno {
+public class TelaPaciente {
 	private JDialog frame;
 	private JTable table;
 	private JScrollPane scrollPane;
@@ -56,14 +56,11 @@ public class TelaAluno {
 	private JTextField textField_2;
 	private JTextField textField_3;
 	private JTextField textField_4;
-	private JLabel label_1;
-	private JTextField textField_5;
-
 
 	/**
 	 * Create the application.
 	 */
-	public TelaAluno() {
+	public TelaPaciente() {
 		initialize();
 	}
 
@@ -72,30 +69,37 @@ public class TelaAluno {
 	 */
 	private void initialize() {
 		frame = new JDialog();
-		frame.setModal(true);		//janela modal
-		
+		frame.setModal(true); // janela modal
+
 		frame.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowOpened(WindowEvent arg0) {
 				Fachada.inicializar();
 				listagem();
 			}
+
 			@Override
 			public void windowClosing(WindowEvent e) {
 				Fachada.finalizar();
 			}
 		});
-		frame.setTitle("Alunos");
+		frame.setTitle("Pessoas");
 		frame.setBounds(100, 100, 744, 428);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		frame.setResizable(false);
-		
+
 		scrollPane = new JScrollPane();
 		scrollPane.setBounds(21, 63, 685, 155);
 		frame.getContentPane().add(scrollPane);
 
-		table = new JTable();
+		table = new JTable() {
+			// proibir alteracao de celulas
+			public boolean isCellEditable(int rowIndex, int vColIndex) {
+				return false;
+			}
+		};
+		
 		// evento de selecao de uma linha da tabela
 		table.addMouseListener(new MouseAdapter() {
 			@Override
@@ -103,15 +107,13 @@ public class TelaAluno {
 				try {
 					if (table.getSelectedRow() >= 0) {
 						// pegar o nome, data nascimento e apelidos da pessoa selecionada
-						String nome = (String) table.getValueAt(table.getSelectedRow(), 0);
-						Aluno a = Fachada.localizarAluno(nome);
-						String data = a.getDtNascimento();
-						String nota = a.getNota()+"";
+						String nome = (String) table.getValueAt(table.getSelectedRow(), 1);
+						Pessoa p = Fachada.localizarPessoa(nome);
+						String data = p.getDtNascimento();
 						textField_1.setText(nome);
 						textField_2.setText(data);
-						textField_3.setText(String.join(",", a.getApelidos()));
+						textField_3.setText(String.join(",", p.getApelidos()));
 						textField_4.setText("");
-						textField_5.setText(nota);
 						label.setText("");
 					}
 				} catch (Exception erro) {
@@ -135,7 +137,7 @@ public class TelaAluno {
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 
 		button_4 = new JButton("Apagar");
-		button_4.setToolTipText("apagar aluno e seus dados");
+		button_4.setToolTipText("apagar pessoa e seus dados");
 		button_4.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -147,14 +149,14 @@ public class TelaAluno {
 					String nome = textField_1.getText();
 					Object[] options = { "Confirmar", "Cancelar" };
 					int escolha = JOptionPane.showOptionDialog(null,
-							"Esta operação apagará os telefones e removerá as reunioes de " + nome, "Alerta",
+							"Esta operaï¿½ï¿½o apagarï¿½ os telefones e removerï¿½ as reunioes de " + nome, "Alerta",
 							JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
 					if (escolha == 0) {
 						Fachada.excluirPessoa(nome);
-						label.setText("aluno excluido");
+						label.setText("pessoa excluida");
 						listagem(); // listagem
 					} else
-						label.setText("exclusão cancelada");
+						label.setText("exclusï¿½o cancelada");
 
 				} catch (Exception erro) {
 					label.setText(erro.getMessage());
@@ -186,7 +188,7 @@ public class TelaAluno {
 		textField.setBounds(62, 28, 106, 20);
 		frame.getContentPane().add(textField);
 
-		label_2 = new JLabel("selecione um aluno para editar");
+		label_2 = new JLabel("selecione uma pessoa para editar");
 		label_2.setBounds(21, 216, 394, 14);
 		frame.getContentPane().add(label_2);
 
@@ -228,7 +230,7 @@ public class TelaAluno {
 		frame.getContentPane().add(textField_3);
 
 		button_1 = new JButton("Criar");
-		button_1.setToolTipText("cadastrar novo aluno");
+		button_1.setToolTipText("cadastrar nova pessoa");
 		button_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -239,14 +241,13 @@ public class TelaAluno {
 					String nome = textField_1.getText().trim();
 					String nascimento = textField_2.getText().trim();
 					String[] apelidos = textField_3.getText().trim().split(",");
-					double nota = Double.parseDouble(textField_5.getText().trim());
 
-					Fachada.criarAluno(nome, nascimento,new ArrayList<>( Arrays.asList(apelidos)), nota);
+					Fachada.criarPessoa(nome, nascimento, new ArrayList<>(Arrays.asList(apelidos)));
 					String numero = textField_4.getText();
 					if (!numero.isEmpty())
 						Fachada.criarTelefone(nome, numero);
 
-					label.setText("aluno criado");
+					label.setText("pessoa criada");
 					listagem();
 				} catch (Exception ex) {
 					label.setText(ex.getMessage());
@@ -258,7 +259,7 @@ public class TelaAluno {
 		frame.getContentPane().add(button_1);
 
 		button_5 = new JButton("Atualizar");
-		button_5.setToolTipText("atualizar aluno ");
+		button_5.setToolTipText("atualizar pessoa ");
 		button_5.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -269,13 +270,12 @@ public class TelaAluno {
 					String nome = textField_1.getText();
 					String nascimento = textField_2.getText();
 					String[] apelidos = textField_3.getText().trim().split(",");
-					double nota = Double.parseDouble(textField_5.getText().trim());
-					Fachada.alterarAluno(nome, nascimento, new ArrayList<>(Arrays.asList(apelidos)), nota);
 
+					Fachada.alterarPessoa(nome, nascimento, new ArrayList<>(Arrays.asList(apelidos)));
 					String numero = textField_4.getText();
 					if (!numero.isEmpty())
 						Fachada.criarTelefone(nome, numero);
-					label.setText("aluno alterado");
+					label.setText("pessoa alterada");
 					listagem();
 				} catch (Exception ex2) {
 					label.setText(ex2.getMessage());
@@ -297,7 +297,6 @@ public class TelaAluno {
 				textField_2.setText("");
 				textField_3.setText("");
 				textField_4.setText("");
-				textField_5.setText("");
 			}
 		});
 		button_3.setBounds(276, 234, 89, 23);
@@ -314,58 +313,44 @@ public class TelaAluno {
 		textField_4.setColumns(10);
 		textField_4.setBounds(101, 309, 86, 20);
 		frame.getContentPane().add(textField_4);
-		
-		label_1 = new JLabel("nota");
-		label_1.setHorizontalAlignment(SwingConstants.LEFT);
-		label_1.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		label_1.setBounds(235, 313, 74, 14);
-		frame.getContentPane().add(label_1);
-		
-		textField_5 = new JTextField();
-		textField_5.setFont(new Font("Dialog", Font.PLAIN, 12));
-		textField_5.setColumns(10);
-		textField_5.setBounds(276, 309, 86, 20);
-		frame.getContentPane().add(textField_5);
-
 
 		frame.setVisible(true);
 	}
 
 	public void listagem() {
 		try {
-			List<Aluno> lista = Fachada.listarAlunos();
+			List<Pessoa> lista = Fachada.consultarPessoas(textField.getText());
 
 			// objeto model contem todas as linhas e colunas da tabela
 			DefaultTableModel model = new DefaultTableModel();
 			table.setModel(model);
 
 			// criar as colunas (0,1,2) da tabela
+			model.addColumn("Id");
 			model.addColumn("Nome");
 			model.addColumn("Nascimento");
-			model.addColumn("Nota");
 			model.addColumn("Apelidos");
 			model.addColumn("Telefones");
 
 			// criar as linhas da tabela
-			String texto1,texto2;
-			for (Aluno a : lista) {
-				texto1 = String.join(",", a.getApelidos()); // concatena strings
-
-				if (a.getTelefones().size() > 0){
+			String texto1, texto2;
+			for (Pessoa p : lista) {
+				texto1 = String.join(",", p.getApelidos()); // concatena strings
+				if (p.getTelefones().size() > 0) {
 					texto2 = "";
-					for (Telefone t : a.getTelefones())
-						texto2 +=  t.getNumero() + " ";
-				}
-				else
+					for (Telefone t : p.getTelefones())
+						texto2 += t.getNumero() + " ";
+				} else
 					texto2 = "sem telefone";
-
-				model.addRow(new Object[] { a.getNome(), a.getDtNascimento(), a.getNota(), texto1, texto2 });
+				//adicionar linha no table
+				model.addRow(new Object[] { p.getId(), p.getNome(), p.getDtNascimento(), texto1, texto2 });
 
 			}
-			label_2.setText("resultados: " + lista.size() + " alunos   - selecione uma linha para editar");
+			label_2.setText("resultados: " + lista.size() + " pessoas   - selecione uma linha para editar");
 
-			// redimensionar a coluna 3 e 4
+			// redimensionar a coluna 0,3 e 4
 			table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF); // desabilita
+			table.getColumnModel().getColumn(0).setMaxWidth(40); // coluna id
 			table.getColumnModel().getColumn(3).setMinWidth(200); // coluna dos apelidos
 			table.getColumnModel().getColumn(4).setMinWidth(200); // coluna dos telefones
 			table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS); // desabilita
@@ -374,4 +359,5 @@ public class TelaAluno {
 			label.setText(erro.getMessage());
 		}
 	}
+
 }

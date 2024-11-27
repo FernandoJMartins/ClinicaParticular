@@ -15,6 +15,8 @@ import java.util.List;
 import com.db4o.ObjectContainer;
 import com.db4o.query.Query;
 
+import modelo.Medico;
+
 public abstract class DAO<T> implements DAOInterface<T> {
 	protected static ObjectContainer manager;
 
@@ -47,7 +49,7 @@ public abstract class DAO<T> implements DAOInterface<T> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<T> readAll() {
+	public List<Medico> readAll() {
 		manager.ext().purge(); // limpar cache do manager
 
 		Class<T> type = (Class<T>) ((ParameterizedType) this.getClass().getGenericSuperclass())
