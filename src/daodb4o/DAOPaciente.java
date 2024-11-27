@@ -28,11 +28,11 @@ public class DAOPaciente extends DAO<Paciente>{
 			return null;
 	}
 
-	public void create(Paciente obj){
-		int novoid = super.gerarId(Paciente.class);  	//gerar novo id da classe
-		obj.setId(novoid);				//atualizar id do objeto antes de grava-lo no banco
-		manager.store( obj );
-	}
+//	public void create(Paciente obj){
+//		int novoid = super.gerarId(Paciente.class);  	//gerar novo id da classe
+//		obj.setId(novoid);				//atualizar id do objeto antes de grava-lo no banco
+//		manager.store( obj );
+//	}
 	/**********************************************************
 	 * 
 	 * TODAS AS CONSULTAS DE Paciente

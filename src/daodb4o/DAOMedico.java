@@ -25,11 +25,11 @@ public class DAOMedico extends DAO<Medico>{
 			return null;
 	}
 	
-	public void create(Medico obj){
-		int novoid = super.gerarId(Medico.class);  	//gerar novo id da classe
-		obj.setId(novoid);				//atualizar id do objeto antes de grava-lo no banco
-		manager.store( obj );
-	}
+//	public void create(Medico obj){
+//		int novoid = super.gerarId(Medico.class);  	//gerar novo id da classe
+//		obj.setId(novoid);				//atualizar id do objeto antes de grava-lo no banco
+//		manager.store( obj );
+//	}
 	
 }
 

@@ -56,7 +56,7 @@ public abstract class DAO<T> implements DAOInterface<T> {
 				.getActualTypeArguments()[0];
 		Query q = manager.query();
 		q.constrain(type);
-		return (List<T>) q.execute();
+		return (List<Medico>) q.execute();
 	}
 
 	// --------transa��o---------------
